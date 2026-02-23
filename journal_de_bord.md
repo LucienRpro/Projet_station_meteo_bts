@@ -46,40 +46,22 @@ CREATE TABLE meteo (
 );
 ```
 
+Création d'u utilisateur pour la base de donnnée
+```sql
+CREATE USER 'meteo'@'localhost' IDENTIFIED BY 'meteo123';
+GRANT ALL PRIVILEGES ON stationmeteo.* TO 'meteo'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+```
+
 Création des fichier pour visualiser la table meteo
 ```bash
 sudo nano /var/www/html/index.php
 sudo nano /var/www/html/meteo.php
 ```
 Code des fichiers
-```php
-<?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
-// Information de connexion à MySQL
-$host = "localhost";
-$user = "meteo_app";	// root pour la vm de test
-$password = "meteo_app1234"; // vide car pas de mot de passe
-$dbname = "stationmeteo";
-
-// Connexion à MySQL
-try {
-	// Connexion PDO
-	$conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
-	$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-	// Récupérer toutes les données météo
-	$stmt = $conn->query("SELECT * FROM meteo ORDER BY date DESC");
-	$meteoData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
-} catch (PDOException $e) {
-	echo "Erreur : " . $e->getMessage();
-} 
-?>
-```
+index.php
 ```php
 <?php include 'meteo.php'; ?>
 <!DOCTYPE html>
@@ -109,4 +91,41 @@ try {
         </table>
     </body>
 </html>
+```
+
+meteo.php
+```php
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// Information de connexion à MySQL
+$host = "localhost";
+$user = "meteo_app";	// root pour la vm de test
+$password = "meteo_app1234"; // vide car pas de mot de passe
+$dbname = "stationmeteo";
+
+// Connexion à MySQL
+try {
+	// Connexion PDO
+	$conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
+	$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+	// Récupérer toutes les données météo
+	$stmt = $conn->query("SELECT * FROM meteo ORDER BY date DESC");
+	$meteoData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+} catch (PDOException $e) {
+	echo "Erreur : " . $e->getMessage();
+} 
+?>
+```
+Insertion de donnée dans la table
+```sql
+USE stationmeteo;
+
+INSERT INTO meteo (temperature, humidite, vitesse_vent, date, point_rose)
+VALUES (22.5, 55.2, 12.3, NOW(), 12.1);
 ```
