@@ -1,15 +1,16 @@
 CREATE TABLE IF NOT EXISTS `weather_data` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `temperature` FLOAT NOT NULL,
-    `humidity` FLOAT NOT NULL,
-    `wind_speed` FLOAT NOT NULL,
-    `dew_point` FLOAT NOT NULL,
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `temperature` DECIMAL(4,1) NOT NULL,
+    `humidity` DECIMAL(4,1) NOT NULL,
+    `wind_speed` DECIMAL(4,1) NOT NULL,
+    `dew_point` DECIMAL(4,1) NOT NULL,
     `recorded_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY(`id`)
+    PRIMARY KEY(`id`),
+    INDEX idx_recorded_at (recorded_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `users` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `username` VARCHAR(50) NOT NULL UNIQUE,
     `password_hash` VARCHAR(255) NOT NULL,
     `role` ENUM('admin', 'user') NOT NULL DEFAULT 'user',
@@ -18,6 +19,3 @@ CREATE TABLE IF NOT EXISTS `users` (
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
-
