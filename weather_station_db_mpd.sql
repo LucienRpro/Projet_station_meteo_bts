@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `weather_data` (
     `dew_point` DECIMAL(4,1) NOT NULL,
     `recorded_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(`id`),
-    INDEX idx_recorded_at (recorded_at)
+    INDEX idx_recorded_at ('recorded_at')
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `users` (
