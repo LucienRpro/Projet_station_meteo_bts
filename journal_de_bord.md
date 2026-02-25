@@ -216,3 +216,59 @@ Puis, afin de mettre le fichier à jour
 sudo update-grub
 sudo reboot
 ```
+### 24/02/2026
+Aujourd'hui j'ai fait l'installation de tout le nécessaire pour le serveur LAMP, exactement comme je l'avais fait pour la machine virtuelle précédemment
+J'ai aussi installé OpenSSH pour me connecter à distance sur mon serveur en utilisant VS Code pour pouvoir modifier les fichiers dans var/html afin de coder plus facilement le site web du serveur.
+```bash
+sudo apt install openssh-server
+sudo systemctl enable --now ssh
+```
+Puis j'ai crée la base de donnée weather_station
+```sql
+CREATE DATABASE weather_station;
+```
+A qui j'ai associer un utilsateur mysql qui sera dédier à la connexion pour mon site
+```sql
+CREATE USER 'weather_station_user'@'localhost' IDENTIFIED BY 'MYqE),45]jg2';
+GRANT ALL PRIVILEGES ON weather_station.* TO 'weather_station_user'@'localhost';
+FLUSH PRIVILEGES;
+```
+Et ensuite j'ai sécuriser mysql avec
+```bash
+sudo mysql_secure_installation
+```
+Voici la configuration :
+
+- VALIDATE PASSWORD : activé (niveau MEDIUM) pour imposer des mots de passe robustes aux comptes MySQL (réduction du risque de force brute) ; choix MEDIUM pour être suffisamment strict sans bloquer l’utilisation.
+- Changement du mot de passe root : non, car l’accès admin se fait via authentification socket (sudo mysql) ; évite de gérer un mot de passe root MySQL et limite l’attaque par force brute.
+- Suppression des utilisateurs anonymes : oui, pour supprimer des comptes inutiles pouvant permettre un accès non authentifié.
+- Interdiction du login root à distance : oui, pour empêcher toute connexion admin depuis le réseau et réduire la surface d’attaque.
+- Suppression de la base test : oui, car inutile en production/projet et parfois utilisée pour des tests d’exploitation.
+- Rechargement des privilèges : oui, pour appliquer immédiatement les changements de sécurité.
+
+### 25/02/2026
+Création des tables weather_data et users dans la base de données, voici le script sql :
+```sql
+CREATE TABLE IF NOT EXISTS `weather_data` (
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `temperature` DECIMAL(4,1) NOT NULL,
+    `humidity` DECIMAL(4,1) NOT NULL,
+    `wind_speed` DECIMAL(4,1) NOT NULL,
+    `dew_point` DECIMAL(4,1) NOT NULL,
+    `recorded_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(`id`),
+    INDEX idx_recorded_at ('recorded_at')
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `users` (
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `username` VARCHAR(50) NOT NULL UNIQUE,
+    `password_hash` VARCHAR(255) NOT NULL,
+    `role` ENUM('admin', 'user') NOT NULL DEFAULT 'user',
+    `email` VARCHAR(255) NOT NULL,
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+Les données sont en décimal 4,1 pour couvrir une plage large allant de -999,1 à 999,9. Pour recorded_at et created_at la valeur par défaut est la valeur lors de la création de la donnée. Et pour faciliter les affichages en fonction des dates, j'ai créé un index.Les données sont en décimal 4,1 pour couvrir une plage large allant de -999,1 à 999,9. pour recorded_at et created_at la valeur par défaut est la valeur lors de la création de la donnée. Et pour faciliter les affichage en fonction des dates j'ai créer un index.
