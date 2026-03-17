@@ -125,7 +125,7 @@ try {
 
 <div align="center">
 	
-![Image avant la réquete](https://github.com/LucienRpro/Projet_station_meteo_bts/blob/main/weather_station_view%20before_insert.png)
+![Image avant la réquete](https://github.com/LucienRpro/Projet_station_meteo_bts/blob/main/Sources/weather_station_view%20before_insert.png)
 </div>
 
 Insertion de données dans la table
@@ -137,7 +137,7 @@ VALUES (22.5, 55.2, 12.3, NOW(), 12.1);
 ```
 <div align="center">
 	
-![Image après la réquete](https://github.com/LucienRpro/Projet_station_meteo_bts/blob/main/weather_station_view%20after_insert.png)
+![Image après la réquete](https://github.com/LucienRpro/Projet_station_meteo_bts/blob/main/Sources/weather_station_view%20after_insert.png)
 </div>
 
 ### 17/02/2026
@@ -156,14 +156,6 @@ Ajout du MPD qui se traduit directement en langage SQL prêt à être utilisé d
 MPD (Modèle Physique de données) :
 
 ```sql
-CREATE DATABASE weather_station;
-
-CREATE USER 'weather_station_user'@'localhost' IDENTIFIED BY 'MYqE),45]jg2';
-GRANT ALL PRIVILEGES ON weather_station.* TO 'weather_station_user'@'localhost';
-FLUSH PRIVILEGES;
-
-USE weather_station;
-
 CREATE TABLE IF NOT EXISTS `weather_data` (
     `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `temperature` DECIMAL(4,1) NOT NULL,
@@ -268,15 +260,22 @@ Voici la configuration :
 ### 25/02/2026
 Création des tables weather_data et users dans la base de données, voici le script sql :
 ```sql
+CREATE DATABASE weather_station;
+
+CREATE USER 'weather_station_user'@'localhost' IDENTIFIED BY 'MYqE),45]jg2';
+GRANT ALL PRIVILEGES ON weather_station.* TO 'weather_station_user'@'localhost';
+FLUSH PRIVILEGES;
+
+USE weather_station;
+
 CREATE TABLE IF NOT EXISTS `weather_data` (
     `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `temperature` DECIMAL(4,1) NOT NULL,
     `humidity` DECIMAL(4,1) NOT NULL,
     `wind_speed` DECIMAL(4,1) NOT NULL,
-    `dew_point` DECIMAL(4,1) NOT NULL,
     `recorded_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY(`id`),
-    INDEX idx_recorded_at ('recorded_at')
+    PRIMARY KEY (`id`),
+    INDEX `idx_recorded_at` (`recorded_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `users` (
@@ -287,7 +286,25 @@ CREATE TABLE IF NOT EXISTS `users` (
     `email` VARCHAR(255) NOT NULL,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY(`id`)
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `authentication_failures` (
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `username_entry` VARCHAR(50) NOT NULL,
+    `recorded_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `weather_alert` (
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `weather_data_id` INTEGER UNSIGNED NOT NULL,
+    `threshold_value` DECIMAL(4,1) NOT NULL,
+    `alert_type` ENUM('temperature_high', 'temperature_low', 'wind_speed') NOT NULL,
+    PRIMARY KEY (`id`),
+    INDEX `idx_weather_data_id` (`weather_data_id`),
+    CONSTRAINT `fk_weather_alert_weather_data`
+        FOREIGN KEY (`weather_data_id`) REFERENCES `weather_data`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
 Les données sont en décimal 4,1 pour couvrir une plage large allant de -999,1 à 999,9. Pour recorded_at et created_at la valeur par défaut est la valeur lors de la création de la donnée. Et pour faciliter les affichages en fonction des dates, j'ai créé un index.Les données sont en décimal 4,1 pour couvrir une plage large allant de -999,1 à 999,9. pour recorded_at et created_at la valeur par défaut est la valeur lors de la création de la donnée. Et pour faciliter les affichage en fonction des dates j'ai créer un index.
