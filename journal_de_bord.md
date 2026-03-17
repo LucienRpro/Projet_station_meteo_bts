@@ -143,18 +143,11 @@ VALUES (22.5, 55.2, 12.3, NOW(), 12.1);
 ### 17/02/2026
 Après avoir expérimenté et compris à quoi ressemblerait mon projet, je décide de faire la modélisation de ma base de données, pour cela je fais un diagramme MLD. Cela permettra de montrer rapidement à une personne extérieure au projet ce que contient la base de données. Et ça prépare le terrain pour programmer la base de données en SQL ensuite.
 
-Diagramme UML :
-
-<div align="center">
-	
-![Diagramme uml](https://github.com/LucienRpro/Projet_station_meteo_bts/blob/main/weather_station_db_uml.png)
-</div>
-
 MLD (Modèle logique de données) :
 
 <div align="center">
 	
-![MLD](https://github.com/LucienRpro/Projet_station_meteo_bts/blob/main/weather_station_db_mld.png)
+![MLD](https://github.com/LucienRpro/Projet_station_meteo_bts/blob/main/Sources/Diagram/weather_station_db_mld.png)
 </div>
 
 ### 18/02/2026
