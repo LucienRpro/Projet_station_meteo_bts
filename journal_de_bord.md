@@ -156,25 +156,51 @@ Ajout du MPD qui se traduit directement en langage SQL prêt à être utilisé d
 MPD (Modèle Physique de données) :
 
 ```sql
+CREATE DATABASE weather_station;
+
+CREATE USER 'weather_station_user'@'localhost' IDENTIFIED BY 'MYqE),45]jg2';
+GRANT ALL PRIVILEGES ON weather_station.* TO 'weather_station_user'@'localhost';
+FLUSH PRIVILEGES;
+
+USE weather_station;
+
 CREATE TABLE IF NOT EXISTS `weather_data` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `temperature` FLOAT NOT NULL,
-    `humidity` FLOAT NOT NULL,
-    `wind_speed` FLOAT NOT NULL,
-    `dew_point` FLOAT NOT NULL,
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `temperature` DECIMAL(4,1) NOT NULL,
+    `humidity` DECIMAL(4,1) NOT NULL,
+    `wind_speed` DECIMAL(4,1) NOT NULL,
     `recorded_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY(`id`)
+    PRIMARY KEY (`id`),
+    INDEX `idx_recorded_at` (`recorded_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `users` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `username` VARCHAR(50) NOT NULL UNIQUE,
     `password_hash` VARCHAR(255) NOT NULL,
     `role` ENUM('admin', 'user') NOT NULL DEFAULT 'user',
     `email` VARCHAR(255) NOT NULL,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY(`id`)
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `authentication_failures` (
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `username_entry` VARCHAR(50) NOT NULL,
+    `recorded_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `weather_alert` (
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `weather_data_id` INTEGER UNSIGNED NOT NULL,
+    `threshold_value` DECIMAL(4,1) NOT NULL,
+    `alert_type` ENUM('temperature_high', 'temperature_low', 'wind_speed') NOT NULL,
+    PRIMARY KEY (`id`),
+    INDEX `idx_weather_data_id` (`weather_data_id`),
+    CONSTRAINT `fk_weather_alert_weather_data`
+        FOREIGN KEY (`weather_data_id`) REFERENCES `weather_data`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
 
