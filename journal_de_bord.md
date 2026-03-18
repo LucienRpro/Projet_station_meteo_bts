@@ -330,3 +330,11 @@ network:
         dhcp4: true
 ```
 
+Coniguration de vs code sur mon pc :
+- installe Remote - SSH
+- Ctrl+Shift+P
+- Remote-SSH: Add New SSH Host...
+- ssh user1@192.168.1.126
+- Ctrl+Shift+P
+- Remote-SSH: Connect to Host...
+- choisis l’hôte ajouté
