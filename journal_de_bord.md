@@ -262,7 +262,7 @@ Création des tables weather_data et users dans la base de données, voici le sc
 ```sql
 CREATE DATABASE weather_station;
 
-CREATE USER 'weather_station_user'@'localhost' IDENTIFIED BY 'MYqE),45]jg2';
+CREATE USER 'weather_station_user'@'localhost' IDENTIFIED BY 'F29g=?Vsa*4D';
 GRANT ALL PRIVILEGES ON weather_station.* TO 'weather_station_user'@'localhost';
 FLUSH PRIVILEGES;
 
@@ -308,3 +308,25 @@ CREATE TABLE IF NOT EXISTS `weather_alert` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
 Les données sont en décimal 4,1 pour couvrir une plage large allant de -999,1 à 999,9. Pour recorded_at et created_at la valeur par défaut est la valeur lors de la création de la donnée. Et pour faciliter les affichages en fonction des dates, j'ai créé un index.Les données sont en décimal 4,1 pour couvrir une plage large allant de -999,1 à 999,9. pour recorded_at et created_at la valeur par défaut est la valeur lors de la création de la donnée. Et pour faciliter les affichage en fonction des dates j'ai créer un index.
+
+## 18/03/2026
+Configuation du fichier 01-wifi.yaml
+```yaml
+network:
+  version: 2
+  renderer: networkd
+  wifis:
+    wlo1:
+      dhcp4: true
+      access-points:
+        "Livebox-86B0":
+          password: "QPiLshQhT5NWynbe4U"
+        "Bbox-9D3DEAF8":
+          password: "X4KtfvVM3X2G7p954f"
+        "Galaxy A34 5G B81F":
+          password: "Luce2030"
+  ethernets:
+    enxb00ec68e86c8:
+        dhcp4: true
+```
+
