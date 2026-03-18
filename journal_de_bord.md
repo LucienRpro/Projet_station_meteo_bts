@@ -240,7 +240,7 @@ CREATE DATABASE weather_station;
 ```
 A qui j'ai associer un utilsateur mysql qui sera dédier à la connexion pour mon site
 ```sql
-CREATE USER 'weather_station_user'@'localhost' IDENTIFIED BY 'MYqE),45]jg2';
+CREATE USER 'weather_station_user'@'localhost' IDENTIFIED BY 'F29g=?Vsa*4D';
 GRANT ALL PRIVILEGES ON weather_station.* TO 'weather_station_user'@'localhost';
 FLUSH PRIVILEGES;
 ```
