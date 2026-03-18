@@ -328,7 +328,7 @@ network:
   ethernets:
     enxb00ec68e86c8:
         dhcp4: true
-```
+
 
 Coniguration de vs code sur mon pc :
 - installe Remote - SSH
@@ -338,3 +338,56 @@ Coniguration de vs code sur mon pc :
 - Ctrl+Shift+P
 - Remote-SSH: Connect to Host...
 - choisis l’hôte ajouté
+
+Création du projet dans le home:
+```bash
+mkdir ~/weather-station-web
+```
+Configurer Apache (VirtualHost propre)
+```bash
+ls /etc/apache2/sites-available
+000-default.conf  default-ssl.conf
+```
+```bash
+sudo cat /etc/apache2/sites-available/weather-station.conf
+[sudo] password for user1:
+<VirtualHost *:80>
+    ServerName weather-station
+    DocumentRoot /home/user1/weather-station-web
+
+    <Directory /home/user1/weather-station-web>
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/weather-station-web_error.log
+    CustomLog ${APACHE_LOG_DIR}/weather-station-web_access.log combined
+</VirtualHost>
+user1@weather-station-srv:~$
+```
+
+```bash
+ls /etc/apache2/sites-available
+000-default.conf  default-ssl.conf  weather-station.conf
+```
+
+ÉTAPE 4 — Activer le site
+```bash
+sudo a2ensite stationmeteo.conf
+sudo systemctl reload apache2
+```
+
+ÉTAPE 5 — Désactiver le site par défaut
+```bash
+sudo a2dissite 000-default.conf
+sudo systemctl reload apache2
+```
+
+Autoriser l'accès à Apache
+```bash
+sudo apt install acl -y
+sudo setfacl -m u:www-data:rx /home/user1
+sudo setfacl -R -m u:www-data:rx /home/user1/weather-station-web
+sudo systemctl reload apache2
+```
+(Ça donne à Apache l’accès nécessaire sans rendre ton home “public”.)
