@@ -391,3 +391,10 @@ sudo setfacl -R -m u:www-data:rx /home/user1/weather-station-web
 sudo systemctl reload apache2
 ```
 (Ça donne à Apache l’accès nécessaire sans rendre ton home “public”.)
+
+Site activée :
+```bash
+
+user1@weather-station-srv:~$ ls /etc/apache2/sites-enabled
+weather-station.conf
+```
